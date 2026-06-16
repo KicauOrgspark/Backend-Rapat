@@ -13,14 +13,19 @@ return new class extends Migration
     {
         Schema::create('rapats', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
             $table->string('judul');
             $table->text('deskripsi')->nullable();
             $table->dateTime('waktu_mulai');
             $table->dateTime('waktu_selesai');
             $table->string('lokasi')->nullable();
             $table->string('image_path')->nullable();
+            $table->string('link_rapat')->nullable();
+            $table->enum('status', ['dijadwalkan', 'berlangsung', 'selesai', 'dibatalkan'])->default('dijadwalkan');
             $table->timestamps();
         });
+
     }
 
     /**

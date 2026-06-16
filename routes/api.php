@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RapatController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -13,5 +14,11 @@ Route::prefix('v1')->group(function () {
         Route::middleware('auth:sanctum')->group(function () {
             Route::post('/logout', [AuthController::class, 'logout']);
         });
+    });
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::apiResource('rapat', RapatController::class)->only(['index', 'show']);
+    });
+    Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
+        Route::apiResource('rapat', RapatController::class)->except(['index', 'show']);
     });
 });
