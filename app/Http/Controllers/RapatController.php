@@ -6,31 +6,25 @@ use App\Models\Rapat;
 use App\Http\Requests\Rapat\StoreRapatRequest;
 use App\Http\Requests\Rapat\UpdateRapatRequest;
 use App\Http\Resources\RapatResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
-
 
 class RapatController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(): AnonymousResourceCollection
     {
         $rapats = Rapat::with(['pembuat', 'pesertas'])->latest()->paginate(10);
 
-        return response()->json([
+        // Laravel otomatis membungkus link & meta pagination bawaan!
+        return RapatResource::collection($rapats)->additional([
             'status'  => 'success',
             'message' => 'Daftar rapat berhasil diambil.',
-            'meta'    => [
-                'current_page' => $rapats->currentPage(),
-                'last_page'    => $rapats->lastPage(),
-                'per_page'     => $rapats->perPage(),
-                'total'        => $rapats->total(),
-            ],
-            'data'    => RapatResource::collection($rapats),
-        ], 200);
+        ]);
     }
 
     /**
@@ -39,43 +33,39 @@ class RapatController extends Controller
     public function store(StoreRapatRequest $request): JsonResponse
     {
         $data = $request->validated();
-
         $data['user_id'] = Auth::id();
 
-        // Upload file banner rapat jika ada
         if ($request->hasFile('image')) {
             $data['image_path'] = $request->file('image')->store('rapats/banners', 'public');
         }
 
-        // Proses Create ke database
         $rapat = Rapat::create($data);
 
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Jadwal rapat berhasil dibuat.',
-            'data'    => new RapatResource($rapat->load(['pembuat', 'pesertas'])),
-        ], 201);
+        return (new RapatResource($rapat->load(['pembuat', 'pesertas'])))
+            ->additional([
+                'status'  => 'success',
+                'message' => 'Jadwal rapat berhasil dibuat.',
+            ])
+            ->response()
+            ->setStatusCode(201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Rapat $rapat): JsonResponse
+    public function show(Rapat $rapat): RapatResource
     {
-        // Route Model Binding otomatis melempar 404 jika ID tidak valid
-        return response()->json([
+        return (new RapatResource($rapat->load(['pembuat', 'pesertas'])))->additional([
             'status'  => 'success',
             'message' => 'Detail rapat berhasil ditemukan.',
-            'data'    => new RapatResource($rapat->load(['pembuat', 'pesertas'])),
-        ], 200);
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRapatRequest $request, Rapat $rapat): JsonResponse
+    public function update(UpdateRapatRequest $request, Rapat $rapat): RapatResource
     {
-        // Validasi aman dari jebakan partial update via UpdateRapatRequest
         $data = $request->validated();
 
         if ($request->hasFile('image')) {
@@ -87,11 +77,30 @@ class RapatController extends Controller
 
         $rapat->update($data);
 
-        return response()->json([
+        return (new RapatResource($rapat->load(['pembuat', 'pesertas'])))->additional([
             'status'  => 'success',
             'message' => 'Jadwal rapat berhasil diperbarui.',
-            'data'    => new RapatResource($rapat->load(['pembuat', 'pesertas'])),
-        ], 200);
+        ]);
+    }
+
+    /**
+     * Get meetings where the authenticated user is a participant.
+     */
+    public function myMeetings(): AnonymousResourceCollection
+    {
+        $user = Auth::user();
+
+        $rapats = Rapat::whereHas('pesertas', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+        ->with(['pembuat', 'pesertas'])
+        ->latest()
+        ->paginate(10);
+
+        return RapatResource::collection($rapats)->additional([
+            'status'  => 'success',
+            'message' => 'Daftar rapat Anda berhasil diambil.',
+        ]);
     }
 
     /**

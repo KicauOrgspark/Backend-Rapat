@@ -2,64 +2,119 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Rapat;
 use App\Models\Peserta;
-use Illuminate\Http\Request;
+use App\Models\User;
+use App\Http\Requests\Peserta\StorePesertaRequest;
+use App\Http\Resources\PesertaResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class PesertaController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of participants for a specific meeting.
      */
-    public function index()
+    public function index(Rapat $rapat): AnonymousResourceCollection
     {
-        //
+        $pesertas = Peserta::with('user')
+            ->where('rapat_id', $rapat->id)
+            ->get();
+
+        return PesertaResource::collection($pesertas)->additional([
+            'status'  => 'success',
+            'message' => 'Daftar peserta rapat berhasil diambil.',
+        ]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Store newly created participants in storage.
      */
-    public function create()
+    public function store(StorePesertaRequest $request, Rapat $rapat): AnonymousResourceCollection
     {
-        //
+        // Menyimpan peserta secara bulk dengan aman (menghindari duplikasi)
+        foreach ($request->user_ids as $userId) {
+            Peserta::firstOrCreate([
+                'rapat_id' => $rapat->id,
+                'user_id'  => $userId,
+            ]);
+        }
+
+        $pesertas = Peserta::with('user')
+            ->where('rapat_id', $rapat->id)
+            ->whereIn('user_id', $request->user_ids)
+            ->get();
+
+        return PesertaResource::collection($pesertas)->additional([
+            'status'  => 'success',
+            'message' => 'Peserta berhasil ditambahkan ke rapat.',
+        ]);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Remove a participant from a meeting.
      */
-    public function store(Request $request)
+    public function destroy(Rapat $rapat, User $user): JsonResponse
     {
-        //
+        $deleted = Peserta::where('rapat_id', $rapat->id)
+            ->where('user_id', $user->id)
+            ->delete();
+
+        if (!$deleted) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'User tidak terdaftar sebagai peserta rapat ini.',
+            ], 404);
+        }
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Peserta berhasil dihapus dari rapat.',
+        ], 200);
     }
 
     /**
-     * Display the specified resource.
+     * Participant check-in (join meeting).
      */
-    public function show(Peserta $peserta)
+    public function join(Rapat $rapat): JsonResponse
     {
-        //
-    }
+        $userId = Auth::id();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Peserta $peserta)
-    {
-        //
-    }
+        // Cari record peserta
+        $peserta = Peserta::where('rapat_id', $rapat->id)
+            ->where('user_id', $userId)
+            ->first();
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Peserta $peserta)
-    {
-        //
-    }
+        if (!$peserta) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Anda tidak diundang ke rapat ini.',
+            ], 403);
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Peserta $peserta)
-    {
-        //
+        // Jika sudah join sebelumnya
+        if ($peserta->waktu_join) {
+            return (new PesertaResource($peserta->load('user')))
+                ->additional([
+                    'status'  => 'success',
+                    'message' => 'Anda sudah tercatat hadir di rapat ini sebelumnya.',
+                ])
+                ->response()
+                ->setStatusCode(200);
+        }
+
+        // Catat waktu hadir sekarang
+        $peserta->update([
+            'waktu_join' => now(),
+        ]);
+
+        return (new PesertaResource($peserta->load('user')))
+            ->additional([
+                'status'  => 'success',
+                'message' => 'Kehadiran rapat berhasil dicatat.',
+            ])
+            ->response()
+            ->setStatusCode(200);
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\PesertaResource;
 
 class RapatResource extends JsonResource
 {
@@ -25,6 +26,9 @@ class RapatResource extends JsonResource
 
             // Otomatis memformat data user sesuai UserResource (id, name, nomor_induk, email, role)
             'dibuat_oleh'   => new UserResource($this->whenLoaded('pembuat')),
+            
+            // Mengambil daftar peserta jika ter-load
+            'peserta'       => PesertaResource::collection($this->whenLoaded('pesertas')),
 
             'created_at' => $this->created_at?->toIso8601String(),
         ];
