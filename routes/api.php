@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RapatController;
 use App\Http\Controllers\PesertaController;
+use App\Http\Controllers\LaporanController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -22,6 +23,7 @@ Route::prefix('v1')->group(function () {
         Route::get('my-meetings', [RapatController::class, 'myMeetings']);
         Route::post('rapat/{rapat}/join', [PesertaController::class, 'join']);
         Route::get('rapat/{rapat}/peserta', [PesertaController::class, 'index']);
+        Route::get('rapat/{rapat}/laporan', [LaporanController::class, 'ambilLaporan']);
         
         Route::apiResource('rapat', RapatController::class)->only(['index', 'show']);
     });

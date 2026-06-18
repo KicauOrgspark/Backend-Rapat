@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 #[Fillable([
     'rapat_id',
     'user_id',
+    'status_kehadiran',
     'waktu_join',
 ])]
 class Peserta extends Model

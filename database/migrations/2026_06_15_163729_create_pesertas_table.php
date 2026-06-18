@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('rapat_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->enum('status_kehadiran', ['belum_hadir', 'hadir', 'izin', 'sakit'])->default('belum_hadir');
             $table->dateTime('waktu_join')->nullable();
             $table->timestamps();
         });

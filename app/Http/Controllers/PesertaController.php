@@ -107,6 +107,7 @@ class PesertaController extends Controller
         // Catat waktu hadir sekarang
         $peserta->update([
             'waktu_join' => now(),
+            'status_kehadiran' => 'hadir',
         ]);
 
         return (new PesertaResource($peserta->load('user')))

@@ -23,6 +23,7 @@ class AuthController extends Controller
             'message' => 'Login berhasil',
             'data' => [
                 'access_token' => $token,
+                'user'         => new UserResource($user),
             ],
         ], 200);
     }

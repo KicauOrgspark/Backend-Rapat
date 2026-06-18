@@ -17,8 +17,8 @@ class StoreRapatRequest extends FormRequest
             'judul'         => ['required', 'string', 'max:255'],
             'deskripsi'     => ['nullable', 'string'],
             'waktu_mulai'   => ['required', 'date', 'after_or_equal:now'],
-            'waktu_selesai' => ['required', 'date', 'after:waktu_mulai'],
-            'lokasi'        => ['nullable', 'string', 'max:255'],
+            'waktu_selesai' => ['nullable', 'date', 'after:waktu_mulai'],
+            'lokasi'        => ['required', 'string', 'max:255'],
             'link_rapat'    => ['nullable', 'url', 'max:255'],
             'status'        => ['nullable', 'in:dijadwalkan,berlangsung,selesai,dibatalkan'],
             'image'         => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
@@ -32,6 +32,7 @@ class StoreRapatRequest extends FormRequest
             'waktu_mulai.required'       => 'Waktu mulai rapat harus diisi.',
             'waktu_mulai.after_or_equal' => 'Waktu mulai tidak boleh di masa lalu.',
             'waktu_selesai.after'        => 'Waktu selesai harus setelah waktu mulai.',
+            'lokasi.required'            => 'Lokasi rapat wajib diisi.',
             'image.image'                => 'File yang diupload harus berupa gambar.',
             'image.max'                  => 'Ukuran gambar maksimal adalah 2MB.',
         ];

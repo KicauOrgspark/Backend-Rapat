@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[Fillable([
     'user_id',
@@ -42,5 +43,10 @@ class Rapat extends Model
     public function pesertas(): HasMany
     {
         return $this->hasMany(Peserta::class);
+    }
+
+    public function notulen(): HasOne
+    {
+        return $this->hasOne(Notulen::class);
     }
 }

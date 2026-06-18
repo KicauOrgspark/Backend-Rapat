@@ -21,7 +21,7 @@ class UpdateRapatRequest extends FormRequest
             'judul'         => ['sometimes', 'required', 'string', 'max:255'],
             'deskripsi'     => ['nullable', 'string'],
             'waktu_mulai'   => ['sometimes', 'required', 'date'],
-            'waktu_selesai' => ['sometimes', 'required', 'date', 'after:' . $waktuMulaiBerjalan],
+            'waktu_selesai' => ['sometimes', 'nullable', 'date', 'after:' . $waktuMulaiBerjalan],
             'lokasi'        => ['nullable', 'string', 'max:255'],
             'link_rapat'    => ['nullable', 'url', 'max:255'],
             'status'        => ['sometimes', 'required', 'in:dijadwalkan,berlangsung,selesai,dibatalkan'],
