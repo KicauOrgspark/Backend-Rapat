@@ -98,6 +98,21 @@ test('admin can update meeting schedules', function () {
         ->assertJsonPath('data.judul', 'Judul Rapat Diperbarui');
 });
 
+test('admin can update meeting status to berlangsung', function () {
+    $admin = User::factory()->admin()->create();
+    $rapat = Rapat::factory()->create([
+        'status' => 'dijadwalkan',
+    ]);
+
+    $response = $this->actingAs($admin)
+        ->putJson("/api/v1/rapat/{$rapat->id}", [
+            'status' => 'berlangsung',
+        ]);
+
+    $response->assertStatus(200)
+        ->assertJsonPath('data.status', 'berlangsung');
+});
+
 test('admin can delete meeting schedules', function () {
     $admin = User::factory()->admin()->create();
     $rapat = Rapat::factory()->create();

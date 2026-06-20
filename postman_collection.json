@@ -1,0 +1,269 @@
+{
+  "info": {
+    "name": "Backend Rapat API",
+    "description": "Postman collection untuk API backend rapat. Gunakan variable environment {{baseUrl}} dan {{token}}.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "rapatId",
+      "value": ""
+    },
+    {
+      "key": "userId",
+      "value": ""
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomor_induk\": 123456,\n  \"password\": \"password\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Meetings",
+      "item": [
+        {
+          "name": "List All Meetings",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/rapat"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Meeting Details",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/rapat/{{rapatId}}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "My Meetings",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/my-meetings"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Meeting",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "judul",
+                  "value": "Rapat Koordinasi",
+                  "type": "text"
+                },
+                {
+                  "key": "deskripsi",
+                  "value": "Rapat mingguan untuk koordinasi proyek.",
+                  "type": "text"
+                },
+                {
+                  "key": "waktu_mulai",
+                  "value": "2026-07-01 10:00:00",
+                  "type": "text"
+                },
+                {
+                  "key": "waktu_selesai",
+                  "value": "2026-07-01 12:00:00",
+                  "type": "text"
+                },
+                {
+                  "key": "lokasi",
+                  "value": "Ruang Rapat Utama",
+                  "type": "text"
+                },
+                {
+                  "key": "link_rapat",
+                  "value": "https://meet.example.com/rapat-123",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "dijadwalkan",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/rapat"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Meeting",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "multipart/form-data"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "judul",
+                  "value": "Rapat Pembaruan Jadwal",
+                  "type": "text"
+                },
+                {
+                  "key": "status",
+                  "value": "berlangsung",
+                  "type": "text"
+                },
+                {
+                  "key": "image",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/rapat/{{rapatId}}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Meeting",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/rapat/{{rapatId}}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Participants",
+      "item": [
+        {
+          "name": "Meeting Participants",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/rapat/{{rapatId}}/peserta"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Participants",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_ids\": [1, 2, 3]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/rapat/{{rapatId}}/peserta"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Participant",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/rapat/{{rapatId}}/peserta/{{userId}}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Join Meeting",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/rapat/{{rapatId}}/join"
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

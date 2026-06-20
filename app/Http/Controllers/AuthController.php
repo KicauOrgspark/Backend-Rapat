@@ -31,7 +31,10 @@ class AuthController extends Controller
     public function logout()
     {
         try {
-            auth()->user()->currentAccessToken()->delete();
+            $token = auth()->user()->currentAccessToken();
+            if ($token && method_exists($token, 'delete')) {
+                $token->delete();
+            }
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Logout gagal',
@@ -40,6 +43,15 @@ class AuthController extends Controller
         }
         return response()->json([
             'message' => 'Logout berhasil'
+        ], 200);
+    }
+
+    public function users()
+    {
+        $users = User::select('id', 'name', 'nomor_induk', 'role')->get();
+        return response()->json([
+            'message' => 'Daftar pengguna berhasil diambil',
+            'data' => UserResource::collection($users),
         ], 200);
     }
 }
