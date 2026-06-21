@@ -39,6 +39,7 @@ Route::prefix('v1')->group(function () {
         Route::post('rapat/{rapat}/notulen', [NotulenController::class, 'createNotulen']);
         Route::get('users', [AuthController::class, 'users']);
         Route::patch('rapat/{rapat}/peserta/status', [PesertaController::class, 'updateStatusKehadiran']);
+        Route::post('add/users', [AuthController::class, 'register']);
         
         Route::apiResource('rapat', RapatController::class)->except(['index', 'show']);
     });

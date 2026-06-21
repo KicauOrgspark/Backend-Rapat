@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -53,5 +54,23 @@ class AuthController extends Controller
             'message' => 'Daftar pengguna berhasil diambil',
             'data' => UserResource::collection($users),
         ], 200);
+    }
+
+    public function register(RegisterRequest $request)
+    {
+        $user = User::create([
+            'name' => $request->name,
+            'nomor_induk' => $request->nomor_induk,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+        ]);
+
+
+        return response()->json([
+            'message' => 'Registrasi berhasil',
+            'data' => [
+                'user' => new UserResource($user),
+            ],
+        ], 201);
     }
 }
