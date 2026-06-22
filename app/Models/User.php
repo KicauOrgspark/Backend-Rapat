@@ -50,4 +50,8 @@ class User extends Authenticatable
             ->withPivot('waktu_join')
             ->withTimestamps();
     }
+    public function rapatDibuat(): HasMany
+    {
+        return $this->hasMany(Rapat::class, 'user_id');
+    }
 }

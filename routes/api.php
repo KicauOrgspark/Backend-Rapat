@@ -40,6 +40,8 @@ Route::prefix('v1')->group(function () {
         Route::patch('rapat/{rapat}/peserta/status', [PesertaController::class, 'updateStatusKehadiran']);
         Route::post('add/users', [AuthController::class, 'register']);
 
+        Route::get('rapat/export', [RapatController::class, 'export']);
+
         Route::apiResource('rapat', RapatController::class)->except(['index', 'show']);
     });
 });
