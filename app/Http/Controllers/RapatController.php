@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\NotulenRequest;
 use App\Http\Requests\Rapat\StoreRapatRequest;
 use App\Http\Requests\Rapat\UpdateRapatRequest;
 use App\Http\Resources\PesertaResource;

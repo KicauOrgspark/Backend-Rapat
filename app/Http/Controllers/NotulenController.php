@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\NotulenRequest;
+use App\Http\Requests\Notulen\StoreNotulenRequest;
 use App\Models\Rapat;
 use Illuminate\Http\JsonResponse;
 
 class NotulenController extends Controller
 {
-    public function GetNotulenByRapatID(Rapat $rapat): JsonResponse
+    public function show(Rapat $rapat): JsonResponse
     {
         $notulen = $rapat->notulen;
 
@@ -29,13 +29,15 @@ class NotulenController extends Controller
         ], 200);
     }
 
-    public function createNotulen(Rapat $rapat, NotulenRequest $request): JsonResponse
+    public function store(Rapat $rapat, StoreNotulenRequest $request): JsonResponse
     {
 
         $rapat->notulen()->updateOrCreate(
             ['rapat_id' => $rapat->id],
-            ['isi_notulen' => $request->input('isi_notulen')],
-            ['kesimpulan' => $request->input('kesimpulan') ?? null]
+            [
+                'isi_notulen' => $request->input('isi_notulen'),
+                'kesimpulan' => $request->input('kesimpulan') ?? null
+            ]
         );
 
         return response()->json([

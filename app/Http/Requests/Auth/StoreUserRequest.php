@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends FormRequest
+class StoreUserRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,8 +15,10 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nomor_induk' => ['required', 'integer', 'exists:users,nomor_induk'],
-            'password' => ['required', 'string'],
+            'name' => 'required|string|max:255',
+            'nomor_induk' => 'required|integer|unique:users,nomor_induk',
+            'password' => 'required|string',
+            'role' => 'required|in:admin,guru',
         ];
     }
 }

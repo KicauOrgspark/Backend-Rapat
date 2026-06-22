@@ -8,7 +8,6 @@ use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\RapatController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::prefix('v1')->group(function () {
     // Route for authentication
     Route::prefix('auth')->group(function () {
@@ -26,21 +25,21 @@ Route::prefix('v1')->group(function () {
         Route::get('my-meetings', [RapatController::class, 'myMeetings']);
         Route::post('rapat/{rapat}/join', [PesertaController::class, 'join']);
         Route::get('rapat/{rapat}/peserta', [PesertaController::class, 'index']);
-        Route::get('rapat/{rapat}/notulen', [NotulenController::class, 'GetNotulenByRapatID']);
-        
+        Route::get('rapat/{rapat}/notulen', [NotulenController::class, 'show']);
+
         Route::apiResource('rapat', RapatController::class)->only(['index', 'show']);
     });
-        
+
     // Admin-only routes
     Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
         Route::get('rapat/{rapat}/laporan', [LaporanController::class, 'ambilLaporan']);
         Route::post('rapat/{rapat}/peserta', [PesertaController::class, 'store']);
         Route::delete('rapat/{rapat}/peserta/{user}', [PesertaController::class, 'destroy']);
-        Route::post('rapat/{rapat}/notulen', [NotulenController::class, 'createNotulen']);
+        Route::post('rapat/{rapat}/notulen', [NotulenController::class, 'store']);
         Route::get('users', [AuthController::class, 'users']);
         Route::patch('rapat/{rapat}/peserta/status', [PesertaController::class, 'updateStatusKehadiran']);
         Route::post('add/users', [AuthController::class, 'register']);
-        
+
         Route::apiResource('rapat', RapatController::class)->except(['index', 'show']);
     });
 });

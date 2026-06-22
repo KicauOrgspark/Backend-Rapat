@@ -13,13 +13,14 @@ class PesertaResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'          => $this->id,
-            'rapat_id'    => $this->rapat_id,
-            'waktu_join'  => $this->waktu_join?->toIso8601String(),
-            'hadir'       => !is_null($this->waktu_join),
-            'user'        => new UserResource($this->whenLoaded('user')),
-            'created_at'  => $this->created_at?->toIso8601String(),
-            'updated_at'  => $this->updated_at?->toIso8601String(),
+            'id'                => $this->id,
+            'rapat_id'          => $this->rapat_id,
+            'status_kehadiran'  => $this->status_kehadiran,
+            'waktu_join'        => $this->waktu_join?->toIso8601String(),
+            'hadir'             => !is_null($this->waktu_join),
+            'user'              => new UserResource($this->whenLoaded('user')),
+            'created_at'        => $this->created_at?->toIso8601String(),
+            'updated_at'        => $this->updated_at?->toIso8601String(),
         ];
     }
 }
