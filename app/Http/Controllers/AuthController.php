@@ -7,7 +7,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-
+    
 class AuthController extends Controller
 {
     public function login(LoginRequest $request)
@@ -65,7 +65,7 @@ class AuthController extends Controller
             'role' => $request->role,
         ]);
 
-
+    
         return response()->json([
             'message' => 'Registrasi berhasil',
             'data' => [
