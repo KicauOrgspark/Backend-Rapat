@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Peserta\StorePesertaRequest;
-use App\Http\Requests\UpdateStatusKehadiranRequest;
+use App\Http\Requests\Peserta\UpdateStatusKehadiranRequest;
 use App\Http\Resources\PesertaResource;
 use App\Models\Peserta;
 use App\Models\Rapat;
@@ -146,7 +146,7 @@ class PesertaController extends Controller
             ->setStatusCode(200);
     }
 
-    public function UpdateStatusKehadiran(Rapat $rapat, UpdateStatusKehadiranRequest $request): JsonResponse
+    public function updateStatusKehadiran(Rapat $rapat, UpdateStatusKehadiranRequest $request): JsonResponse
     {
         $user = User::find($request->user_id);
         $status = $request->status;

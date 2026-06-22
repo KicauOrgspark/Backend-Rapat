@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Notulen;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RegisterRequest extends FormRequest
+class StoreNotulenRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,10 +15,8 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'nomor_induk' => 'required|string|max:255|unique:users,nomor_induk',
-            'password' => 'required|string',
-            'role' => 'required|in:admin,guru',
+            'isi_notulen' => 'required|string',
+            'kesimpulan'  => 'nullable|string',
         ];
     }
 }
