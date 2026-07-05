@@ -17,7 +17,6 @@ class UserSeeders extends Seeder
         User::create([
             'name' => 'Admin Absensi Rapat',
             'nomor_induk' => '12345678',
-            'email' => 'admin@rapat.com',
             'password' => Hash::make('password'),
             'role' => 'admin',
         ]);
